@@ -20,8 +20,8 @@ async function init() {
 
 async function main() {
   const user: typeof usersTable.$inferInsert = {
-    name: 'John',
-    age: 30,
+    firstName: 'John',
+    lastName: 'Bailey',
     email: 'john@example.com',
   };
 
@@ -39,13 +39,13 @@ async function main() {
   }[]
   */
 
-  await db
-    .update(usersTable)
-    .set({
-      age: 31,
-    })
-    .where(eq(usersTable.email, user.email));
-  console.log('User info updated!')
+  // await db
+  //   .update(usersTable)
+  //   .set({
+  //     age: 31,
+  //   })
+  //   .where(eq(usersTable.email, user.email));
+  // console.log('User info updated!')
 
   await db.delete(usersTable).where(eq(usersTable.email, user.email));
   console.log('User deleted!')
