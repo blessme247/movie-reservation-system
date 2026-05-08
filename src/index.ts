@@ -10,6 +10,7 @@ const app = express()
 
 async function init() {
   console.log(env.NODE_ENV)
+  console.log(Date.now(), 'date')
 
   if(env.NODE_ENV === "production"){
     await migrate(db, { migrationsFolder: "../drizzle" });

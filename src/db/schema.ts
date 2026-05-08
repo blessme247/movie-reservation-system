@@ -29,6 +29,7 @@ export const showTimesTable = pgTable("showtimes", {
   movieId: integer().references(() => moviesTable.id),
   startTime: timestamp(),
   endTime: timestamp(),
+  ...timestamps
 });
 
 export const rolesTable = pgTable("roles", {
