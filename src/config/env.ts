@@ -17,6 +17,7 @@ const envSchema = z.object({
     .transform((val) => (val ? Number(val) : 4000)),
 
   DATABASE_URL: z.url(),
+  WINSTON_LOG_LEVEL: z.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]).default("http")
 
 });
 

@@ -4,6 +4,7 @@ import { usersTable } from './db/schema';
 import { db } from './db';
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import express from "express"
+import { requestsLogger } from './middleware/logger';
 
 const app = express()
   
@@ -50,6 +51,8 @@ async function main() {
 
   await db.delete(usersTable).where(eq(usersTable.email, user.email));
   console.log('User deleted!')
+
+  app.use(requestsLogger)
 
   app.listen(env.PORT, () => {
   console.log(`Server is listening on port ${env.PORT}`);
