@@ -5,6 +5,9 @@ import { db } from './db';
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import express from "express"
 import { requestsLogger } from './middleware/logger';
+import { corsOptions } from './config/cors';
+import cors from "cors";
+import { apiRateLimiter } from './config/rateLimit';
 
 const app = express()
   
@@ -53,6 +56,9 @@ async function main() {
   console.log('User deleted!')
 
   app.use(requestsLogger)
+  app.use(cors(corsOptions))
+  app.use(express.json())
+  app.use(apiRateLimiter)
 
   app.listen(env.PORT, () => {
   console.log(`Server is listening on port ${env.PORT}`);

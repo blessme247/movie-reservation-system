@@ -1,3 +1,5 @@
 export class AuthService {
-    
+    generateAccessToken = () => {
+        
+    }
 }
