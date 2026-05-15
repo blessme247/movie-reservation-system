@@ -6,7 +6,9 @@ export const usersTable = pgTable("users", {
   firstName: varchar({ length: 255 }).notNull(),
   lastName: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
-  roleId: integer().references(() => rolesTable.id),
+  roleId: integer().references(() => rolesTable.id).notNull(),
+  password: varchar({length: 100}),
+  refreshToken: varchar({length: 3000}),
   ...timestamps
 },
 (table) => [

@@ -8,6 +8,7 @@ import { requestsLogger } from './middleware/logger';
 import { corsOptions } from './config/cors';
 import cors from "cors";
 import { apiRateLimiter } from './config/rateLimit';
+import crypto from "crypto"
 
 const app = express()
   
@@ -20,18 +21,21 @@ async function init() {
     await migrate(db, { migrationsFolder: "../drizzle" });
   }
 
+  console.log(env, 'environment detailsz')
+
   await main();
 }
 
 async function main() {
-  const user: typeof usersTable.$inferInsert = {
-    firstName: 'John',
-    lastName: 'Bailey',
-    email: 'john@example.com',
-  };
+  // const user: typeof usersTable.$inferInsert = {
+  //   firstName: 'John',
+  //   lastName: 'Bailey',
+  //   email: 'john@example.com',
+  //   // roleId: 1
+  // };
 
-  await db.insert(usersTable).values(user);
-  console.log('New user created!')
+  // await db.insert(usersTable).values(user);
+  // console.log('New user created!')
 
   const users = await db.select().from(usersTable);
   console.log('Getting all users from the database: ', users)
@@ -52,8 +56,9 @@ async function main() {
   //   .where(eq(usersTable.email, user.email));
   // console.log('User info updated!')
 
-  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  // await db.delete(usersTable).where(eq(usersTable.email, user.email));
   console.log('User deleted!')
+
 
   app.use(requestsLogger)
   app.use(cors(corsOptions))

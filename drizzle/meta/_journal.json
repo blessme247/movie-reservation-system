@@ -29,6 +29,20 @@
       "when": 1778370608352,
       "tag": "20260509235008_aromatic_stryfe",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778764486286,
+      "tag": "20260514131446_known_stellaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1778764964587,
+      "tag": "20260514132244_nebulous_firelord",
+      "breakpoints": true
     }
   ]
 }

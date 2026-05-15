@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import type { Response, NextFunction } from "express";
 import { handleError } from "../lib/utils/handleError.js";
 import { env } from "../config/env.js";
-import { AuthRequest, JwtPayload } from "../lib/types.js";
+import { AuthRequest, UserJwtPayload } from "../lib/types.js";
 
 
 const verifyJwt = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -17,7 +17,7 @@ const verifyJwt = (req: AuthRequest, res: Response, next: NextFunction) => {
         return handleError(req, res, 403, { message: "Forbidden" }); // invalid token
         
       }
-      const jwtPayload = decoded as JwtPayload;
+      const jwtPayload = decoded as UserJwtPayload;
       req.roleId = jwtPayload.userInfo.roleId;
       req.userId = jwtPayload.userInfo.userId;
       next();
