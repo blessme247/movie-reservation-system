@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import jwt, { Secret, SignOptions } from "jsonwebtoken"
 import { db } from "../../db";
-import { usersTable } from "../../db/schema";
+import { rolesTable, usersTable } from "../../db/schema";
 import { env } from "../../config/env";
 
 type TokenGenerateOptions = {
@@ -44,5 +44,23 @@ export class AuthService {
     return jwt.sign(payload, secret, {
         expiresIn 
     })
+  }
+
+  getRole = async () => {
+    try {
+        
+        const roles = await db.select().from(rolesTable).where(eq(rolesTable.name, "User")).limit(1)
+              let role = roles[0]
+              if(!role) {
+                const roleData: typeof rolesTable.$inferInsert = {
+                    name: "User"
+                }
+                const newUserRole = await db.insert(rolesTable).values(roleData).returning()
+                role = newUserRole[0]
+            }
+            return role as {id: number, name: string}
+    } catch (error) {
+        throw error
+    }
   }
 }

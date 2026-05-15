@@ -21,12 +21,12 @@ const envSchema = z.object({
   ACCESS_TOKEN_SECRET: z.string(),
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRY: z.string(),
-  REFRESH_TOKEN_EXPIRY: z.string()
+  REFRESH_TOKEN_EXPIRY: z.string(),
+  SALT_ROUNDS: z.string().transform((r)=> Number(r))
+})
 
-});
 
-
-const parsed = envSchema.safeParse(process.env);
+const parsed = envSchema.safeParse(process.env)
 
 if (!parsed.success) {
   console.error("❌ Invalid environment variables:");
