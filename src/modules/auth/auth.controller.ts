@@ -1,16 +1,15 @@
 import type { Request, Response, NextFunction } from "express";
-import { loginDto } from "../lib/dto/auth";
-import { handleError } from "../lib/utils/handleError";
-import { db } from "../db";
-import { usersTable } from "../db/schema";
-import { eq } from "drizzle-orm";
+
 import bcrypt from "bcrypt";
-import { AuthService } from "../services/auth";
-import { UserJwtPayload } from "../lib/types";
+import { handleError } from "../../lib/utils/handleError";
+import {type UserJwtPayload } from "../../lib/types";
+import { loginDto } from "./auth.dto";
+import { AuthService } from "./auth.service";
+import { ErrorLogService } from "../../services/logger";
 
 export class AuthController {
+ errorLogService = new ErrorLogService() 
   constructor(private readonly authService: AuthService) {}
-
   async login(req: Request, res: Response) {
     const parseResult = loginDto.safeParse(req.body);
     if (!parseResult.success) {
@@ -36,7 +35,17 @@ export class AuthController {
         message: "Invalid credentials"
       })
 
-      const payload: UserJwtPayload = {userInfo: {userId: user.id, roleId: user.roleId}}
-    } catch (error) {}
+      const accessTokenPayload: UserJwtPayload = {userInfo: {userId: user.id, roleId: user.roleId}}
+      const refreshTokenPayload: Pick<UserJwtPayload['userInfo'], 'userId'> = {userId: user.id} 
+      const accessToken = this.authService.generateToken({payload: accessTokenPayload, tokenType: "access"})
+      const refreshToken = this.authService.generateToken({payload: refreshTokenPayload, tokenType: "refresh"})
+      const result = 
+    } catch (error) {
+        this.errorLogService.logServerError(req, "auth-controller", error)
+        return handleError(req, res, 500, {
+        success: false,
+        message: "Server error"
+      })
+    }
   }
 }

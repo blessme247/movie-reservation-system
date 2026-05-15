@@ -1,6 +1,7 @@
 import { integer, pgTable, varchar, uniqueIndex, index, date, time, timestamp, AnyPgColumn, } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helpers";
 
+
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   firstName: varchar({ length: 255 }).notNull(),
@@ -32,20 +33,28 @@ export const moviesTable = pgTable("movies", {
 ]
 );
 
+
 export const showTimesTable = pgTable("showtimes", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   movieId: integer().references(() => moviesTable.id),
   cinemaId: integer().references(() => cinemaTable.id),
-  scheduleId: integer().references(() => scheduleTable.id),
+  // scheduleId: integer().references(() => scheduleTable.id),
   totalReservations: integer().notNull(),
   datetime: timestamp().notNull(),
   ...timestamps
 });
 
-
 export const scheduleTable = pgTable("schedules", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
+});
+
+/**
+ * A joining table between showtimes and schedules
+ */
+export const showTimeScheduleTable = pgTable("showtime_schedules", {
+  showTimeId: integer().references(() => showTimesTable.id),
+  scheduleId: integer().references(() => scheduleTable.id)
 });
 
 export const cinemaTable = pgTable("cinemas", {
@@ -81,10 +90,17 @@ export const posterImagesTable = pgTable("poster_images", {
 ]
 );
 
-export const movieGenresTable = pgTable("genres", {
+export const genresTable = pgTable("genres", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  movieId: integer().references(() => moviesTable.id),
   name: varchar({ length: 255 }).notNull(),
+})
+
+/**
+ * A joining table between movies and genres 
+ */
+export const movieGenresTable = pgTable("movie_genres", {
+  movieId: integer().references(() => moviesTable.id),
+  genreId: integer().references(() => genresTable.id),
 })
 
 export const seatReservationsTable = pgTable("seat_reservations", {
@@ -124,6 +140,9 @@ export const reservationTicketsTable = pgTable("reservation_tickets", {
   index('reservation_id_idx').on(table.reservationId),
 ])
 
+/**
+ * A joining table between reservations and seats
+ */
 export const reservationSeatsTable = pgTable("reservation_seats", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   reservationId: integer().references(() => seatReservationsTable.id),

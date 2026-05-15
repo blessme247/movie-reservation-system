@@ -43,6 +43,20 @@
       "when": 1778764964587,
       "tag": "20260514132244_nebulous_firelord",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1778853165677,
+      "tag": "20260515135245_furry_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778857036388,
+      "tag": "20260515145716_mixed_outlaw_kid",
+      "breakpoints": true
     }
   ]
 }

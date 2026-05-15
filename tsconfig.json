@@ -43,7 +43,7 @@
     "resolveJsonModule": true,
     // "allowJs": true,
     "noEmit": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
   },
   "exclude": ["node_modules", "dist"]
 }

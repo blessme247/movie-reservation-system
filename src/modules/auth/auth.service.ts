@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { usersTable } from "../db/schema";
-import { env } from "../config/env";
 import jwt, { Secret, SignOptions } from "jsonwebtoken"
+import { db } from "../../db";
+import { usersTable } from "../../db/schema";
+import { env } from "../../config/env";
 
 type TokenGenerateOptions = {
     payload: string | object | Buffer<ArrayBufferLike>;
@@ -10,8 +10,6 @@ type TokenGenerateOptions = {
 };
 
 export class AuthService {
-    
-  generateAccessToken = () => {};
 
   checkIfUserExists = async (email: string) => {
     try {
@@ -40,7 +38,7 @@ export class AuthService {
     };
 }
 
-  generateToken = async ({payload, tokenType}: TokenGenerateOptions) => {
+  generateToken = ({payload, tokenType}: TokenGenerateOptions) => {
     const { expiresIn, secret } = this.configToken(tokenType);
 
     return jwt.sign(payload, secret, {

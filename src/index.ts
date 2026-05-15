@@ -1,6 +1,4 @@
 import { env } from './config/env';
-import { eq } from 'drizzle-orm';
-import { usersTable } from './db/schema';
 import { db } from './db';
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import express from "express"
@@ -8,7 +6,7 @@ import { requestsLogger } from './middleware/logger';
 import { corsOptions } from './config/cors';
 import cors from "cors";
 import { apiRateLimiter } from './config/rateLimit';
-import crypto from "crypto"
+import { seed } from './lib/seed';
 
 const app = express()
   
@@ -21,24 +19,23 @@ async function init() {
     await migrate(db, { migrationsFolder: "../drizzle" });
   }
 
-  console.log(env, 'environment detailsz')
-
   await main();
 }
 
 async function main() {
+  await seed()
   // const user: typeof usersTable.$inferInsert = {
   //   firstName: 'John',
   //   lastName: 'Bailey',
   //   email: 'john@example.com',
-  //   // roleId: 1
+  //   roleId: 1
   // };
 
   // await db.insert(usersTable).values(user);
-  // console.log('New user created!')
+  // console.log('New user created!') 
 
-  const users = await db.select().from(usersTable);
-  console.log('Getting all users from the database: ', users)
+  // const users = await db.select().from(usersTable);
+  // console.log('Getting all users from the database: ', users)
   /*
   const users: {
     id: number;
@@ -56,8 +53,8 @@ async function main() {
   //   .where(eq(usersTable.email, user.email));
   // console.log('User info updated!')
 
-  // await db.delete(usersTable).where(eq(usersTable.email, user.email));
-  console.log('User deleted!')
+  // await db.delete(usersTable);
+  // console.log('Users deleted!')
 
 
   app.use(requestsLogger)
