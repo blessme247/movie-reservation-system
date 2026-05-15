@@ -7,6 +7,8 @@ import { corsOptions } from './config/cors';
 import cors from "cors";
 import { apiRateLimiter } from './config/rateLimit';
 import { seed } from './lib/seed';
+import { usersTable } from './db/schema';
+import { eq } from 'drizzle-orm';
 
 const app = express()
   
@@ -24,15 +26,15 @@ async function init() {
 
 async function main() {
   await seed()
-  // const user: typeof usersTable.$inferInsert = {
-  //   firstName: 'John',
-  //   lastName: 'Bailey',
-  //   email: 'john@example.com',
-  //   roleId: 1
-  // };
+  const user: typeof usersTable.$inferInsert = {
+    firstName: 'John',
+    lastName: 'Bailey',
+    email: 'john@example.com',
+    roleId: 1
+  };
 
-  // await db.insert(usersTable).values(user);
-  // console.log('New user created!') 
+  await db.insert(usersTable).values(user);
+  console.log('New user created!') 
 
   // const users = await db.select().from(usersTable);
   // console.log('Getting all users from the database: ', users)
@@ -45,16 +47,16 @@ async function main() {
   }[]
   */
 
-  // await db
-  //   .update(usersTable)
-  //   .set({
-  //     age: 31,
-  //   })
-  //   .where(eq(usersTable.email, user.email));
-  // console.log('User info updated!')
+  const updatedUser = await db
+    .update(usersTable)
+    .set({
+      roleId: 2,
+    })
+    .where(eq(usersTable.email, user.email)).returning();
+  console.log('User info updated!', updatedUser)
 
-  // await db.delete(usersTable);
-  // console.log('Users deleted!')
+  await db.delete(usersTable);
+  console.log('Users deleted!')
 
 
   app.use(requestsLogger)

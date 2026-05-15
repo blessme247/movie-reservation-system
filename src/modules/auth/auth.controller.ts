@@ -6,10 +6,15 @@ import {type UserJwtPayload } from "../../lib/types";
 import { loginDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { ErrorLogService } from "../../services/logger";
+import { db } from "../../db";
+import { usersTable } from "../../db/schema";
+import { eq } from "drizzle-orm";
+import { handleSuccess } from "../../lib/utils/handleSuccess";
 
 export class AuthController {
  errorLogService = new ErrorLogService() 
-  constructor(private readonly authService: AuthService) {}
+ authService = new AuthService()
+//   constructor(private readonly authService: AuthService) {}
   async login(req: Request, res: Response) {
     const parseResult = loginDto.safeParse(req.body);
     if (!parseResult.success) {
@@ -39,7 +44,14 @@ export class AuthController {
       const refreshTokenPayload: Pick<UserJwtPayload['userInfo'], 'userId'> = {userId: user.id} 
       const accessToken = this.authService.generateToken({payload: accessTokenPayload, tokenType: "access"})
       const refreshToken = this.authService.generateToken({payload: refreshTokenPayload, tokenType: "refresh"})
-      const result = 
+      const updatedUser = await db
+          .update(usersTable)
+          .set({
+            refreshToken: refreshToken,
+          })
+          .where(eq(usersTable.id, user.id)).returning({id: usersTable.id, firstName: usersTable.firstName, lastName: usersTable.lastName, email: usersTable.email})
+
+          return handleSuccess(req, res, 201, {data: updatedUser[0], accessToken, refreshToken})
     } catch (error) {
         this.errorLogService.logServerError(req, "auth-controller", error)
         return handleError(req, res, 500, {
