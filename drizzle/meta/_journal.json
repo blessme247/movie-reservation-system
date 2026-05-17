@@ -5,57 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1775941134415,
-      "tag": "20260411205854_motionless_jack_flag",
+      "when": 1778945346440,
+      "tag": "20260516152906_ordinary_hex",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1778235275655,
-      "tag": "20260508101435_worried_marvex",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1778367958732,
-      "tag": "20260509230558_steep_donald_blake",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1778370608352,
-      "tag": "20260509235008_aromatic_stryfe",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1778764486286,
-      "tag": "20260514131446_known_stellaris",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1778764964587,
-      "tag": "20260514132244_nebulous_firelord",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1778853165677,
-      "tag": "20260515135245_furry_the_leader",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1778857036388,
-      "tag": "20260515145716_mixed_outlaw_kid",
+      "when": 1778989915644,
+      "tag": "20260517035155_safe_triton",
       "breakpoints": true
     }
   ]

@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 import bcrypt from "bcrypt";
 import { handleError } from "../../lib/utils/handleError";
@@ -70,7 +70,7 @@ export class AuthController {
           email: usersTable.email,
         });
 
-      return handleSuccess(req, res, 201, {
+      return handleSuccess(req, res, 200, {
         data: updatedUser[0],
         accessToken,
         refreshToken,

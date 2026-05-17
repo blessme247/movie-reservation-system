@@ -1,0 +1,1 @@
+ALTER TABLE "movies" ADD COLUMN "posterImage" jsonb DEFAULT '{"assetId":"","url":"","publicId":""}'::jsonb NOT NULL;

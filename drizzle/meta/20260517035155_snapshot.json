@@ -1,6 +1,6 @@
 {
-  "id": "5a1bb7d2-110e-450c-ae61-2b10d677eed6",
-  "prevId": "88e6b51a-73de-4015-a8ec-d8e36ec07f41",
+  "id": "cdc49c5e-c90d-4038-a9a3-8af60401ffb8",
+  "prevId": "43823268-fb00-4b64-9454-76e98d84a4c3",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -38,7 +38,23 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "name_idx": {
+          "name": "name_idx",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -67,12 +83,6 @@
             "cycle": false
           }
         },
-        "movieId": {
-          "name": "movieId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -81,13 +91,51 @@
         }
       },
       "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.movie_genres": {
+      "name": "movie_genres",
+      "schema": "",
+      "columns": {
+        "movieId": {
+          "name": "movieId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "genreId": {
+          "name": "genreId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
       "foreignKeys": {
-        "genres_movieId_movies_id_fk": {
-          "name": "genres_movieId_movies_id_fk",
-          "tableFrom": "genres",
+        "movie_genres_movieId_movies_id_fk": {
+          "name": "movie_genres_movieId_movies_id_fk",
+          "tableFrom": "movie_genres",
           "tableTo": "movies",
           "columnsFrom": [
             "movieId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "movie_genres_genreId_genres_id_fk": {
+          "name": "movie_genres_genreId_genres_id_fk",
+          "tableFrom": "movie_genres",
+          "tableTo": "genres",
+          "columnsFrom": [
+            "genreId"
           ],
           "columnsTo": [
             "id"
@@ -183,15 +231,28 @@
           "primaryKey": false,
           "notNull": true
         },
-        "posterImageId": {
-          "name": "posterImageId",
-          "type": "integer",
+        "posterImageUrl": {
+          "name": "posterImageUrl",
+          "type": "varchar(1000)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "posterImage": {
+          "name": "posterImage",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"assetId\":\"\",\"url\":\"\",\"publicId\":\"\"}'::jsonb"
         },
         "statusId": {
           "name": "statusId",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "trailerLink": {
+          "name": "trailerLink",
+          "type": "varchar(1500)",
           "primaryKey": false,
           "notNull": false
         },
@@ -248,164 +309,12 @@
         }
       },
       "foreignKeys": {
-        "movies_posterImageId_poster_images_id_fk": {
-          "name": "movies_posterImageId_poster_images_id_fk",
-          "tableFrom": "movies",
-          "tableTo": "poster_images",
-          "columnsFrom": [
-            "posterImageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "movies_statusId_status_id_fk": {
           "name": "movies_statusId_status_id_fk",
           "tableFrom": "movies",
           "tableTo": "status",
           "columnsFrom": [
             "statusId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.poster_images": {
-      "name": "poster_images",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "poster_images_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
-        },
-        "movieId": {
-          "name": "movieId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "publicId": {
-          "name": "publicId",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "assetId": {
-          "name": "assetId",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "secureUrl": {
-          "name": "secureUrl",
-          "type": "varchar(1000)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "width": {
-          "name": "width",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "height": {
-          "name": "height",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "format": {
-          "name": "format",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "resourceType": {
-          "name": "resourceType",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "folder": {
-          "name": "folder",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "bytes": {
-          "name": "bytes",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deletedAt": {
-          "name": "deletedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "movie_id_idx": {
-          "name": "movie_id_idx",
-          "columns": [
-            {
-              "expression": "movieId",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "poster_images_movieId_movies_id_fk": {
-          "name": "poster_images_movieId_movies_id_fk",
-          "tableFrom": "poster_images",
-          "tableTo": "movies",
-          "columnsFrom": [
-            "movieId"
           ],
           "columnsTo": [
             "id"
@@ -473,7 +382,23 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "reservation_id_idx_seats": {
+          "name": "reservation_id_idx_seats",
+          "columns": [
+            {
+              "expression": "reservationId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "reservation_seats_reservationId_seat_reservations_id_fk": {
           "name": "reservation_seats_reservationId_seat_reservations_id_fk",
@@ -561,7 +486,23 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "reservation_id_idx": {
+          "name": "reservation_id_idx",
+          "columns": [
+            {
+              "expression": "reservationId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "reservation_tickets_reservationId_seat_reservations_id_fk": {
           "name": "reservation_tickets_reservationId_seat_reservations_id_fk",
@@ -727,7 +668,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "showtime_id_idx": {
+          "name": "showtime_id_idx",
+          "columns": [
+            {
+              "expression": "showTimeId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "user_id_idx": {
+          "name": "user_id_idx",
+          "columns": [
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "seat_reservations_showTimeId_showtimes_id_fk": {
           "name": "seat_reservations_showTimeId_showtimes_id_fk",
@@ -831,6 +803,58 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.showtime_schedules": {
+      "name": "showtime_schedules",
+      "schema": "",
+      "columns": {
+        "showTimeId": {
+          "name": "showTimeId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scheduleId": {
+          "name": "scheduleId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "showtime_schedules_showTimeId_showtimes_id_fk": {
+          "name": "showtime_schedules_showTimeId_showtimes_id_fk",
+          "tableFrom": "showtime_schedules",
+          "tableTo": "showtimes",
+          "columnsFrom": [
+            "showTimeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "showtime_schedules_scheduleId_schedules_id_fk": {
+          "name": "showtime_schedules_scheduleId_schedules_id_fk",
+          "tableFrom": "showtime_schedules",
+          "tableTo": "schedules",
+          "columnsFrom": [
+            "scheduleId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.showtimes": {
       "name": "showtimes",
       "schema": "",
@@ -860,12 +884,6 @@
         },
         "cinemaId": {
           "name": "cinemaId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "scheduleId": {
-          "name": "scheduleId",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -929,13 +947,119 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.showtime_reserved_seats": {
+      "name": "showtime_reserved_seats",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "showtime_reserved_seats_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
-        "showtimes_scheduleId_schedules_id_fk": {
-          "name": "showtimes_scheduleId_schedules_id_fk",
-          "tableFrom": "showtimes",
-          "tableTo": "schedules",
+        "showTimeId": {
+          "name": "showTimeId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seatId": {
+          "name": "seatId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "showtime_id_idx_reserved_seats": {
+          "name": "showtime_id_idx_reserved_seats",
+          "columns": [
+            {
+              "expression": "showTimeId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "seat_id_idx": {
+          "name": "seat_id_idx",
+          "columns": [
+            {
+              "expression": "seatId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "showtime_reserved_seats_showTimeId_showtimes_id_fk": {
+          "name": "showtime_reserved_seats_showTimeId_showtimes_id_fk",
+          "tableFrom": "showtime_reserved_seats",
+          "tableTo": "showtimes",
           "columnsFrom": [
-            "scheduleId"
+            "showTimeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "showtime_reserved_seats_seatId_seats_id_fk": {
+          "name": "showtime_reserved_seats_seatId_seats_id_fk",
+          "tableFrom": "showtime_reserved_seats",
+          "tableTo": "seats",
+          "columnsFrom": [
+            "seatId"
           ],
           "columnsTo": [
             "id"
@@ -1028,6 +1152,18 @@
         "roleId": {
           "name": "roleId",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refreshToken": {
+          "name": "refreshToken",
+          "type": "varchar(3000)",
           "primaryKey": false,
           "notNull": false
         },

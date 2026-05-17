@@ -1,9 +1,5 @@
 import { z } from "zod";
-// import dotenv from "dotenv";
 import 'dotenv/config';
-
-// Load .env
-// dotenv.config();
 
 
 const envSchema = z.object({
@@ -22,6 +18,9 @@ const envSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRY: z.string(),
   REFRESH_TOKEN_EXPIRY: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
   SALT_ROUNDS: z.string().transform((r)=> Number(r))
 })
 

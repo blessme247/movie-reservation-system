@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, uniqueIndex, index, date, time, timestamp, AnyPgColumn, } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, uniqueIndex, index, date, time, timestamp, AnyPgColumn, jsonb, } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helpers";
 
 
@@ -23,8 +23,11 @@ export const moviesTable = pgTable("movies", {
   description: varchar({ length: 500 }).notNull(),
   runTime: integer().notNull(),
   releaseDate: date().notNull(),
-  posterImageId: integer().references((): AnyPgColumn => posterImagesTable.id),
+  // posterImageId: integer().references((): AnyPgColumn => posterImagesTable.id),
+  posterImageUrl: varchar({length: 1000}).notNull(),
+  posterImage: jsonb().default({ assetId: "", url: "", publicId: "" }).notNull(),
   statusId: integer().references((): AnyPgColumn => movieStatusTable.id),
+  trailerLink: varchar({ length: 1500 }),
   ...timestamps
 },
 (table) => [
@@ -71,24 +74,24 @@ export const rolesTable = pgTable("roles", {
   name: varchar({ length: 255 }).notNull(),
 });
 
-export const posterImagesTable = pgTable("poster_images", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  movieId: integer().references(() => moviesTable.id),
-  publicId: varchar({length: 255}).notNull(),
-  assetId: varchar({length: 255}).notNull(),
-  secureUrl: varchar({length: 1000}).notNull(),
-  width: integer().notNull(),
-  height: integer().notNull(),
-  format: varchar({length: 100}).notNull(),
-  resourceType: varchar({length: 100}).notNull(),
-  folder: varchar({length: 100}).notNull(),
-  bytes: integer().notNull(),
-  ...timestamps
-},
-(table) => [
-  index("movie_id_idx").on(table.movieId)
-]
-);
+// export const posterImagesTable = pgTable("poster_images", {
+//   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+//   movieId: integer().references(() => moviesTable.id),
+//   publicId: varchar({length: 255}).notNull(),
+//   assetId: varchar({length: 255}).notNull(),
+//   secureUrl: varchar({length: 1000}).notNull(),
+//   width: integer().notNull(),
+//   height: integer().notNull(),
+//   format: varchar({length: 100}).notNull(),
+//   resourceType: varchar({length: 100}).notNull(),
+//   folder: varchar({length: 100}).notNull(),
+//   bytes: integer().notNull(),
+//   ...timestamps
+// },
+// (table) => [
+//   index("movie_id_idx").on(table.movieId)
+// ]
+// );
 
 export const genresTable = pgTable("genres", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
