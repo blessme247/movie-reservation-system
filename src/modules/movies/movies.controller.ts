@@ -9,7 +9,7 @@ import {
   moviesTable,
   movieStatusTable,
 } from "../../db/schema";
-import { eq, sql } from "drizzle-orm";
+import { and, count, eq, ilike, sql } from "drizzle-orm";
 import { handleSuccess } from "../../lib/utils/handleSuccess";
 import { ErrorLogService } from "../../services/logger";
 import { PosterImage } from "../../lib/types";
@@ -108,11 +108,19 @@ export class MovieController {
     const { ...queries } = req.query;
     const page = parseInt(queries.page as string) || 1;
     const limit = parseInt(queries.limit as string) || 10;
+    const search = queries.search as string | undefined
+    const releaseDate = queries.releaseDate as string | undefined
     const offset = (page - 1) * limit;
 
+    // build conditions dynamically
+    const conditions = []
+    if(search) conditions.push(ilike(moviesTable.title, `%${search}%`))
+      if(releaseDate) conditions.push(eq(moviesTable.releaseDate, releaseDate))
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
     try {
-      const result = await db
-        .select({
+      const [movies, countResult] = await Promise.all([
+         db.select({
           title: moviesTable.title,
           description: moviesTable.description,
           runtime: moviesTable.runtime,
@@ -125,10 +133,20 @@ export class MovieController {
         .leftJoin(
           movieStatusTable,
           eq(movieStatusTable.id, moviesTable.statusId),
-        )
+        ).where(whereClause)
         .limit(limit)
-        .offset(offset);
-      return handleSuccess(req, res, 200, { success: true, data: result });
+        .offset(offset),
+
+        db.select({ total: count() })
+            .from(moviesTable)
+            .where(whereClause)
+
+      ])
+
+      const total = countResult[0]?.total ?? 0;
+      const totalPages = Math.ceil(total / limit)
+       
+      return handleSuccess(req, res, 200, { success: true, data: movies, pagination: {total, page, limit, totalPages, hasNextPage: totalPages > page, hasPrevPage: page > 1} });
     } catch (error) {
       this.errorLogService.logServerError("movie-controller", error, req);
       return handleError(req, res, 500, {
