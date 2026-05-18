@@ -9,9 +9,10 @@ import {
   moviesTable,
   movieStatusTable,
 } from "../../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { handleSuccess } from "../../lib/utils/handleSuccess";
 import { ErrorLogService } from "../../services/logger";
+import { PosterImage } from "../../lib/types";
 
 export class MovieController {
   errorLogService = new ErrorLogService();
@@ -58,15 +59,14 @@ export class MovieController {
           message: "Invalid status",
         });
 
-       const genreChecks = await Promise.all(
-        genreIds.map((id)=>  db
-          .select()
-          .from(genresTable)
-          .where(eq(genresTable.id, id))
-          .limit(1))
-       )
+      const genreChecks = await Promise.all(
+        genreIds.map((id) =>
+          db.select().from(genresTable).where(eq(genresTable.id, id)).limit(1),
+        ),
+      );
 
-       if(genreChecks.some(g => !g[0])) return handleError(req, res, 400, { message: "Invalid genre" });
+      if (genreChecks.some((g) => !g[0]))
+        return handleError(req, res, 400, { message: "Invalid genre" });
 
       const movie: typeof moviesTable.$inferInsert = {
         title,
@@ -88,7 +88,8 @@ export class MovieController {
         .returning({ id: moviesTable.id, title: moviesTable.title });
       const newMovie = newMovies[0];
 
-      const movieGenres: (typeof movieGenresTable.$inferInsert)[] = genreIds.map((id) => ({ movieId: newMovie?.id!, genreId: id }));
+      const movieGenres: (typeof movieGenresTable.$inferInsert)[] =
+        genreIds.map((id) => ({ movieId: newMovie?.id!, genreId: id }));
       await db.insert(movieGenresTable).values(movieGenres).returning();
       return handleSuccess(req, res, 201, {
         data: { title: newMovie?.title },
@@ -98,7 +99,41 @@ export class MovieController {
       this.errorLogService.logServerError("movie-controller", error, req);
       return handleError(req, res, 500, {
         success: false,
-        message: "server error"
+        message: "server error",
+      });
+    }
+  }
+
+  async getMovies(req: Request, res: Response) {
+    const { ...queries } = req.query;
+    const page = parseInt(queries.page as string) || 1;
+    const limit = parseInt(queries.limit as string) || 10;
+    const offset = (page - 1) * limit;
+
+    try {
+      const result = await db
+        .select({
+          title: moviesTable.title,
+          description: moviesTable.description,
+          runtime: moviesTable.runtime,
+          releaseDate: moviesTable.releaseDate,
+          posterImageUrl: sql<string>`${moviesTable.posterImage}->'url'`,
+          trailerLink: moviesTable.trailerLink,
+          status: movieStatusTable.name,
+        })
+        .from(moviesTable)
+        .leftJoin(
+          movieStatusTable,
+          eq(movieStatusTable.id, moviesTable.statusId),
+        )
+        .limit(limit)
+        .offset(offset);
+      return handleSuccess(req, res, 200, { success: true, data: result });
+    } catch (error) {
+      this.errorLogService.logServerError("movie-controller", error, req);
+      return handleError(req, res, 500, {
+        success: false,
+        message: "server error",
       });
     }
   }

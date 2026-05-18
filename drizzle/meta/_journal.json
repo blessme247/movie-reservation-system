@@ -15,6 +15,13 @@
       "when": 1778989915644,
       "tag": "20260517035155_safe_triton",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779124170663,
+      "tag": "20260518170930_busy_blindfold",
+      "breakpoints": true
     }
   ]
 }

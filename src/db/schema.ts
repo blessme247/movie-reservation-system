@@ -1,5 +1,6 @@
 import { integer, pgTable, varchar, uniqueIndex, index, date, time, timestamp, AnyPgColumn, jsonb, } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helpers";
+import { PosterImage } from "../lib/types";
 
 
 export const usersTable = pgTable("users", {
@@ -25,7 +26,7 @@ export const moviesTable = pgTable("movies", {
   releaseDate: date().notNull(),
   // posterImageId: integer().references((): AnyPgColumn => posterImagesTable.id),
   // posterImageUrl: varchar({length: 1000}).notNull(),
-  posterImage: jsonb().default({ assetId: "", url: "", publicId: "" }).notNull(),
+  posterImage: jsonb().$type<PosterImage>().notNull(),
   statusId: integer().references((): AnyPgColumn => movieStatusTable.id),
   trailerLink: varchar({ length: 1500 }),
   ...timestamps

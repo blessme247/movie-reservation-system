@@ -6,3 +6,9 @@ export type UserJwtPayload = {
         userId: number
     }
 }
+
+export type PosterImage = {
+    url: string
+    assetId: string
+    publicId: string
+}
