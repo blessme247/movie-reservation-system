@@ -60,11 +60,11 @@ const uploadToCloud = async (req: Request) => {
         .end(req?.file?.buffer);
     });
 
-    if (result && result.secure_url) {
+    if (result ) {
     
       return { result, error: null}
     }
-    return { result: null, error: "Upload succeeded but no URL returned" };
+    return { result: null, error: "Upload failed" };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "cloud service upload error";
     return {  result: null, error: errorMessage };

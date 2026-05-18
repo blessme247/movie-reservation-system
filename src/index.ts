@@ -9,6 +9,7 @@ import { apiRateLimiter } from './config/rateLimit';
 import { seed } from './lib/seed';
 import { usersTable } from './db/schema';
 import { eq } from 'drizzle-orm';
+import { createMovieDto } from './modules/movies/movies.dto';
 
 const app = express()
   
@@ -57,6 +58,12 @@ async function main() {
 
   // await db.delete(usersTable);
   // console.log('Users deleted!')
+
+  const date = new Date()
+  console.log(date, 'date')
+
+   const parseResult = createMovieDto.safeParse({title: "New year", description: "happy new year", runTime: 128, releaseDate: new Date("2026-09-06"), statusId: 1})
+   console.log(parseResult, 'parse reult')
 
 
   app.use(requestsLogger)

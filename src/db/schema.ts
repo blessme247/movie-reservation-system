@@ -21,10 +21,10 @@ export const moviesTable = pgTable("movies", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 500 }).notNull(),
-  runTime: integer().notNull(),
+  runtime: integer().notNull(),
   releaseDate: date().notNull(),
   // posterImageId: integer().references((): AnyPgColumn => posterImagesTable.id),
-  posterImageUrl: varchar({length: 1000}).notNull(),
+  // posterImageUrl: varchar({length: 1000}).notNull(),
   posterImage: jsonb().default({ assetId: "", url: "", publicId: "" }).notNull(),
   statusId: integer().references((): AnyPgColumn => movieStatusTable.id),
   trailerLink: varchar({ length: 1500 }),
@@ -102,8 +102,8 @@ export const genresTable = pgTable("genres", {
  * A joining table between movies and genres 
  */
 export const movieGenresTable = pgTable("movie_genres", {
-  movieId: integer().references(() => moviesTable.id),
-  genreId: integer().references(() => genresTable.id),
+  movieId: integer().references(() => moviesTable.id).notNull(),
+  genreId: integer().references(() => genresTable.id).notNull(),
 })
 
 export const seatReservationsTable = pgTable("seat_reservations", {
