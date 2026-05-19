@@ -12,7 +12,6 @@ import {
 import { and, count, eq, ilike, sql } from "drizzle-orm";
 import { handleSuccess } from "../../lib/utils/handleSuccess";
 import { ErrorLogService } from "../../services/logger";
-import { PosterImage } from "../../lib/types";
 
 export class MovieController {
   errorLogService = new ErrorLogService();
@@ -47,12 +46,11 @@ export class MovieController {
         genreIds,
       } = parseResult.data;
 
-      const matchingStatus = await db
+      const [status] = await db
         .select()
         .from(movieStatusTable)
         .where(eq(movieStatusTable.id, statusId))
         .limit(1);
-      const status = matchingStatus[0];
       if (!status || status?.id !== statusId)
         return handleError(req, res, 400, {
           success: false,
@@ -82,11 +80,10 @@ export class MovieController {
         },
       };
 
-      const newMovies = await db
+      const [newMovie] = await db
         .insert(moviesTable)
         .values(movie)
         .returning({ id: moviesTable.id, title: moviesTable.title });
-      const newMovie = newMovies[0];
 
       const movieGenres: (typeof movieGenresTable.$inferInsert)[] =
         genreIds.map((id) => ({ movieId: newMovie?.id!, genreId: id }));

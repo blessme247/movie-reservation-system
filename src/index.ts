@@ -7,7 +7,6 @@ import { corsOptions } from './config/cors';
 import cors from "cors";
 import { apiRateLimiter } from './config/rateLimit';
 import { seed } from './lib/seed';
-import { usersTable } from './db/schema';
 import { eq } from 'drizzle-orm';
 import { createMovieDto } from './modules/movies/movies.dto';
 
@@ -56,14 +55,14 @@ async function main() {
   //   .where(eq(usersTable.email, user.email)).returning();
   // console.log('User info updated!', updatedUser)
 
-  // await db.delete(usersTable);
+  // await db.delete(scheduleTable);
   // console.log('Users deleted!')
 
-  const date = new Date()
-  console.log(date, 'date')
+  // const date = new Date()
+  // console.log(date.getDay(), 'date')
 
-   const parseResult = createMovieDto.safeParse({title: "New year", description: "happy new year", runTime: 128, releaseDate: new Date("2026-09-06"), statusId: 1})
-   console.log(parseResult, 'parse reult')
+  //  const parseResult = createMovieDto.safeParse({title: "New year", description: "happy new year", runtime: 128, releaseDate: "2026-09-06", statusId: 1})
+  //  console.log(parseResult, 'parse reult')
 
 
   app.use(requestsLogger)

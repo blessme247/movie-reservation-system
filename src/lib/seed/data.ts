@@ -24,9 +24,9 @@ export const ticketTypesSeedData: typeof ticketTypesTable.$inferInsert[] = [
 ]
 
 export const scheduleSeedData: typeof scheduleTable.$inferInsert[] = [
-    {name: "Mon - Thur"},
-    {name: "Fri - Sun"},
-    {name: "Fri"},
-    {name: "Sat - Sun"},
-    {name: "Fri - Sat"},
+    {name: "Mon - Thur", days: [1,2,3,4]},
+    {name: "Fri - Sun", days: [5,6,0]},
+    {name: "Fri", days: [5]},
+    {name: "Sat - Sun", days: [6,0]},
+    {name: "Fri - Sat", days: [5,6]},
 ]

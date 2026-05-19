@@ -1,6 +1,6 @@
 import { integer, pgTable, varchar, uniqueIndex, index, date, time, timestamp, AnyPgColumn, jsonb, } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helpers";
-import { PosterImage } from "../lib/types";
+import { type PosterImage } from "../lib/types";
 
 
 export const usersTable = pgTable("users", {
@@ -43,14 +43,15 @@ export const showTimesTable = pgTable("showtimes", {
   movieId: integer().references(() => moviesTable.id),
   cinemaId: integer().references(() => cinemaTable.id),
   // scheduleId: integer().references(() => scheduleTable.id),
-  totalReservations: integer().notNull(),
-  datetime: timestamp().notNull(),
+  // totalReservations: integer().notNull(),
+  time: time().notNull(),
   ...timestamps
 });
 
 export const scheduleTable = pgTable("schedules", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }).notNull(), // e.g "Monday - Thursday"
+  days: integer().array().notNull() // e.g [1,2,3,4]
 });
 
 /**
